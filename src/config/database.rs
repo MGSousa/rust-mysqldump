@@ -1,7 +1,7 @@
-use std::env;
 use dotenv::dotenv;
-use serde::Deserialize;
 use mysql::OptsBuilder;
+use serde::Deserialize;
+use std::env;
 
 #[derive(Debug, Deserialize)]
 pub struct DatabaseConfig {
@@ -30,7 +30,9 @@ impl DatabaseConfig {
 
         Ok(Self {
             db_host: env::var("DB_HOST")?,
-            db_port: env::var("DB_PORT")?.parse::<u16>().map_err(|_| env::VarError::NotPresent)?,
+            db_port: env::var("DB_PORT")?
+                .parse::<u16>()
+                .map_err(|_| env::VarError::NotPresent)?,
             db_username: env::var("DB_USERNAME")?,
             db_password: env::var("DB_PASSWORD")?,
             db_folder: env::var("DB_FOLDER")?,
@@ -55,5 +57,4 @@ impl DatabaseConfig {
             .pass(Some(&self.db_password));
         builder
     }
-    
 }
