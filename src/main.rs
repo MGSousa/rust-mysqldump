@@ -19,14 +19,14 @@ async fn run_mysqldump(
         fs::create_dir_all(&config.db_folder)?;
     }
 
-    let dbs_to_dump = if config.db_exports.contains(&"*".to_string()) {
+    let dbs_to_dump = if config.db_include.contains(&"*".to_string()) {
         databases
             .iter()
-            .filter(|db| !config.db_forgets.contains(db))
+            .filter(|db| !config.db_exclude.contains(db))
             .collect::<Vec<_>>()
     } else {
         config
-            .db_exports
+            .db_include
             .iter()
             .filter(|db| databases.contains(db))
             .collect::<Vec<_>>()
@@ -59,7 +59,7 @@ async fn run_mysqldump(
             let mut file = File::create(&filename)?;
             file.write_all(&output.stdout)?;
 
-            utils::output::compress_file(&filename, &gzip_filename)?;
+            utils::output::compress_file(&filename, &gzip_filename, &config.compression)?;
 
             successful_dumps.push((i, db.to_string(), duration));
         } else {
@@ -99,7 +99,10 @@ async fn main() {
             },
             Err(e) => eprintln!("{}", format!("Failed to get databases: {}", e).red()),
         },
-        Err(e) => eprintln!("{}", format!("Failed to read .env file: {}", e).red()),
+        Err(e) => eprintln!(
+            "{}",
+            format!("Failed to read environment variables: {}", e).red()
+        ),
     }
 }
 

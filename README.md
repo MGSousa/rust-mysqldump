@@ -22,8 +22,9 @@ Rust MySQL Dump is a command-line application for quickly backing up your MySQL 
     - `DB_PORT`: The port number of your MySQL server.
     - `DB_USERNAME`: The username to use when connecting to your MySQL server.
     - `DB_PASSWORD`: The password to use when connecting to your MySQL server.
-    - `DB_EXPORTS`: A comma-separated list of databases to backup. Use `*` to backup all databases.
-    - `DB_FORGETS`: A comma-separated list of databases to exclude from the backup.
+    - `DB_INCLUDE`: A comma-separated list of databases to backup. Use `*` to backup all databases.
+    - `DB_EXCLUDE`: A comma-separated list of databases to exclude from the backup.
+    - `COMPRESSION`: Choose desired compression for snapshot files
 
 2. Run the application:
 
@@ -38,8 +39,8 @@ This utility depends on the following Rust crates:
 - `mysql`: To connect to the MySQL server and retrieve the list of databases.
 - `cli-table`: To print the list of databases in a neat table.
 - `colored`: To colorize the output to the terminal.
-- `dotenv`: To load the database configuration from environment variables.
 - `serde`: To deserialize the database configuration.
+- `gzp`: To compress a snapshot file on a multi-threaded mode
 
 ## Contributing
 

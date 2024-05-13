@@ -1,4 +1,3 @@
-use dotenv::dotenv;
 use mysql::OptsBuilder;
 use serde::Deserialize;
 use std::env;
@@ -9,21 +8,28 @@ pub struct DatabaseConfig {
     pub db_port: u16,
     pub db_username: String,
     pub db_password: String,
-    pub db_exports: Vec<String>,
-    pub db_forgets: Vec<String>,
+
+    // specifying DBs to include from the dump
+    pub db_include: Vec<String>,
+
+    // specifying DBs to exclude from the dump
+    pub db_exclude: Vec<String>,
+
+    // choose Snaphost folder
     pub db_folder: String,
+
+    // Choose algorithm compression
+    pub compression: String,
 }
 
 impl DatabaseConfig {
     pub fn from_env() -> Result<Self, env::VarError> {
-        dotenv().ok();
-
-        let db_exports: Vec<String> = env::var("DB_EXPORTS")?
+        let db_include: Vec<String> = env::var("DB_EXPORTS")?
             .split(',')
             .map(|s| s.to_string())
             .collect();
 
-        let db_forgets: Vec<String> = env::var("DB_FORGETS")?
+        let db_exclude: Vec<String> = env::var("DB_EXCLUDE")?
             .split(',')
             .map(|s| s.to_string())
             .collect();
@@ -36,8 +42,9 @@ impl DatabaseConfig {
             db_username: env::var("DB_USERNAME")?,
             db_password: env::var("DB_PASSWORD")?,
             db_folder: env::var("DB_FOLDER")?,
-            db_exports,
-            db_forgets,
+            db_include,
+            db_exclude,
+            compression: env::var("COMPRESSION")?,
         })
     }
 
