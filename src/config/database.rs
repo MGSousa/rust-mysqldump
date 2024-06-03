@@ -24,7 +24,7 @@ pub struct DatabaseConfig {
 
 impl DatabaseConfig {
     pub fn from_env() -> Result<Self, env::VarError> {
-        let db_include: Vec<String> = env::var("DB_EXPORTS")?
+        let db_include: Vec<String> = env::var("DB_INCLUDE")?
             .split(',')
             .map(|s| s.to_string())
             .collect();
